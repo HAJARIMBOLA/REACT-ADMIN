@@ -1,24 +1,38 @@
 import { Admin, Resource } from "react-admin";
 import jsonServerProvider from "ra-data-json-server";
 
-import { EmployeeList } from "./employees/EmployeeList.tsx";
-import { EmployeeCreate } from "./employees/EmployeeCreate.tsx";
-import { EmployeeEdit } from "./employees/EmployeeEdit.tsx";
-import { EmployeeShow } from "./employees/EmployeeShow.tsx";
+import { EmployeeList } from "./employees/EmployeeList";
+import { EmployeeCreate } from "./employees/EmployeeCreate";
+import { EmployeeEdit } from "./employees/EmployeeEdit";
+import { EmployeeShow } from "./employees/EmployeeShow";
 
-const dataProvider = jsonServerProvider(
-  "http://localhost:3002"
-);
+import { InternList } from "./interns/InternList";
+import { InternCreate } from "./interns/InternCreate";
+import { InternEdit } from "./interns/InternEdit";
+import { InternShow } from "./interns/InternShow";
+
+import { Dashboard } from "./Dashboard";
+
+const dataProvider = jsonServerProvider("http://localhost:3002");
 
 function App() {
   return (
-    <Admin dataProvider={dataProvider}>
+    <Admin dataProvider={dataProvider} dashboard={Dashboard}>
       <Resource
         name="employees"
         list={EmployeeList}
         create={EmployeeCreate}
         edit={EmployeeEdit}
         show={EmployeeShow}
+        options={{ label: "Employés" }}
+      />
+      <Resource
+        name="interns"
+        list={InternList}
+        create={InternCreate}
+        edit={InternEdit}
+        show={InternShow}
+        options={{ label: "Stagiaires" }}
       />
     </Admin>
   );

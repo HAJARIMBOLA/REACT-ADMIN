@@ -6,8 +6,10 @@ import {
   BooleanField,
   TopToolbar,
   ListButton,
-  EditButton
+  EditButton,
 } from "react-admin";
+import { InternsByManager } from "./InternsByManager";
+import { DepartmentStats } from "./DepartmentStats";
 
 const EmployeeShowActions = () => (
   <TopToolbar>
@@ -19,20 +21,20 @@ const EmployeeShowActions = () => (
 export const EmployeeShow = () => (
   <Show actions={<EmployeeShowActions />}>
     <SimpleShowLayout>
-      <TextField source="firstname" />
-      <TextField source="lastname" />
-      <TextField source="email" />
-      <TextField source="department" />
-
+      <TextField source="firstname" label="Prénom" />
+      <TextField source="lastname" label="Nom" />
+      <TextField source="email" label="Email" />
+      <TextField source="department" label="Département" />
       <NumberField
         source="salary"
-        options={{
-          style: "currency",
-          currency: "EUR"
-        }}
+        label="Salaire"
+        options={{ style: "currency", currency: "EUR" }}
       />
-
-      <BooleanField source="active" />
+      <BooleanField source="active" label="Actif" />
+      {/* Exercice 9.1 — Stagiaires encadrés */}
+      <InternsByManager />
+      {/* Exercice 9.2 — Stats du département */}
+      <DepartmentStats />
     </SimpleShowLayout>
   </Show>
 );
