@@ -1,5 +1,4 @@
 import { Admin, Resource } from "react-admin";
-import jsonServerProvider from "ra-data-json-server";
 
 import { EmployeeList } from "./employees/EmployeeList";
 import { EmployeeCreate } from "./employees/EmployeeCreate";
@@ -12,19 +11,26 @@ import { InternEdit } from "./interns/InternEdit";
 import { InternShow } from "./interns/InternShow";
 
 import { Dashboard } from "./Dashboard";
-
-const dataProvider = jsonServerProvider("http://localhost:3002");
+import { dataProvider } from "./providers/dataProvider";
+import { authProvider } from "./providers/authProvider";
+import { LoginPage } from "./providers/LoginPage";
 
 function App() {
   return (
-    <Admin dataProvider={dataProvider} dashboard={Dashboard}>
+    <Admin
+      dataProvider={dataProvider}
+      authProvider={authProvider}
+      loginPage={LoginPage}
+      dashboard={Dashboard}
+      requireAuth
+    >
       <Resource
         name="employees"
         list={EmployeeList}
         create={EmployeeCreate}
         edit={EmployeeEdit}
         show={EmployeeShow}
-        options={{ label: "Employés" }}
+        options={{ label: "Employees" }}
       />
       <Resource
         name="interns"
@@ -32,7 +38,7 @@ function App() {
         create={InternCreate}
         edit={InternEdit}
         show={InternShow}
-        options={{ label: "Stagiaires" }}
+        options={{ label: "Interns" }}
       />
     </Admin>
   );
