@@ -6,6 +6,8 @@ import {
   BooleanInput,
   NumberInput,
   ReferenceInput,
+  ImageInput,
+  ImageField,
   required,
   email,
   minValue,
@@ -20,7 +22,6 @@ const DEPARTMENTS = [
   { id: "Finance", name: "Finance" },
 ];
 
-// Titre avec useRecordContext
 const InternTitle = () => {
   const record = useRecordContext();
   if (!record) return null;
@@ -59,6 +60,10 @@ const ManagerReferenceInput = () => {
 export const InternEdit = () => (
   <Edit title={<InternTitle />}>
     <SimpleForm>
+      <ImageInput source="avatar" label="Photo de profil" accept={{ "image/*": [] }}>
+        <ImageField source="src" title="title" />
+      </ImageInput>
+
       <TextInput source="firstname" label="Prénom" validate={required()} />
       <TextInput source="lastname" label="Nom" validate={required()} />
       <TextInput source="email" label="Email" validate={[required(), email()]} />

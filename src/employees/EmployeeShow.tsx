@@ -4,6 +4,8 @@ import {
   TextField,
   NumberField,
   BooleanField,
+  DateField,
+  ImageField,
   TopToolbar,
   ListButton,
   EditButton,
@@ -21,6 +23,7 @@ const EmployeeShowActions = () => (
 export const EmployeeShow = () => (
   <Show actions={<EmployeeShowActions />}>
     <SimpleShowLayout>
+      <ImageField source="avatar.src" label="Photo" />
       <TextField source="firstname" label="Prénom" />
       <TextField source="lastname" label="Nom" />
       <TextField source="email" label="Email" />
@@ -31,9 +34,9 @@ export const EmployeeShow = () => (
         options={{ style: "currency", currency: "EUR" }}
       />
       <BooleanField source="active" label="Actif" />
-      {/* Exercice 9.1 — Stagiaires encadrés */}
+      <DateField source="createdAt" label="Créé le" showTime />
+      <DateField source="updatedAt" label="Mis à jour le" showTime />
       <InternsByManager />
-      {/* Exercice 9.2 — Stats du département */}
       <DepartmentStats />
     </SimpleShowLayout>
   </Show>

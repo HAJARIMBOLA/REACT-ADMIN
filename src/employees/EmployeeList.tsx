@@ -9,7 +9,9 @@ import {
   SearchInput,
   SelectInput,
   usePermissions,
+  ShowButton,
 } from "react-admin";
+import { exporter } from "../components/CsvExporter";
 import { QuickStatusToggle } from "./QuickStatusToggle";
 
 const employeeFilters = [
@@ -33,7 +35,7 @@ export const EmployeeList = () => {
   const isAdmin = permissions === "admin";
 
   return (
-    <List filters={employeeFilters} perPage={5}>
+    <List filters={employeeFilters} perPage={10} exporter={exporter}>
       <Datagrid rowClick="show">
         <TextField source="firstname" label="Prénom" />
         <TextField source="lastname" label="Nom" />

@@ -6,6 +6,8 @@ import {
   BooleanInput,
   NumberInput,
   ReferenceInput,
+  ImageInput,
+  ImageField,
   required,
   email,
   minValue,
@@ -19,7 +21,6 @@ const DEPARTMENTS = [
   { id: "Finance", name: "Finance" },
 ];
 
-// Champ remuneration conditionnel — visible seulement si isRemunerate est coché
 const RemunerationField = () => {
   const isRemunerate = useWatch({ name: "isRemunerate" });
   if (!isRemunerate) return null;
@@ -32,7 +33,6 @@ const RemunerationField = () => {
   );
 };
 
-// Filtre dynamique des managers : même département + actif
 const ManagerReferenceInput = () => {
   const department = useWatch({ name: "department" });
   return (
@@ -53,6 +53,10 @@ const ManagerReferenceInput = () => {
 export const InternCreate = () => (
   <Create redirect="list">
     <SimpleForm>
+      <ImageInput source="avatar" label="Photo de profil" accept={{ "image/*": [] }}>
+        <ImageField source="src" title="title" />
+      </ImageInput>
+
       <TextInput source="firstname" label="Prénom" validate={required()} />
       <TextInput source="lastname" label="Nom" validate={required()} />
       <TextInput source="email" label="Email" validate={[required(), email()]} />

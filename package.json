@@ -3,6 +3,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "server": "json-server --watch db.json --port 3002",
+    "start": "concurrently --kill-others --names \"API,APP\" --prefix-colors \"cyan,green\" \"npm run server\" \"npm run dev\"",
     "build": "vite build",
     "serve": "vite preview",
     "type-check": "tsc --noEmit",
@@ -16,12 +18,14 @@
     "@mui/material": "^7.0.1",
     "axios": "^1.17.0",
     "json-server": "^0.17.4",
+    "jsonexport": "^3.2.0",
     "ra-data-json-server": "^5.14.7",
     "react": "^19.0.0",
     "react-admin": "^5.14.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.1.3",
-    "react-router-dom": "^7.1.3"
+    "react-router-dom": "^7.1.3",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
@@ -29,6 +33,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.0.0",
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.5",

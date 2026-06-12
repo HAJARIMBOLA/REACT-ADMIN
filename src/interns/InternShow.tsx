@@ -4,6 +4,8 @@ import {
   TextField,
   NumberField,
   BooleanField,
+  DateField,
+  ImageField,
   ReferenceField,
   TopToolbar,
   ListButton,
@@ -21,11 +23,11 @@ const InternShowActions = () => (
 export const InternShow = () => (
   <Show actions={<InternShowActions />}>
     <SimpleShowLayout>
+      <ImageField source="avatar.src" label="Photo" />
       <TextField source="firstname" label="Prénom" />
       <TextField source="lastname" label="Nom" />
       <TextField source="email" label="Email" />
       <TextField source="department" label="Département" />
-      {/* Manager comme lien cliquable vers sa fiche employé */}
       <ReferenceField source="managerId" reference="employees" label="Manager" link="show">
         <TextField source="firstname" /> <TextField source="lastname" />
       </ReferenceField>
@@ -37,7 +39,8 @@ export const InternShow = () => (
       />
       <TextField source="startDate" label="Date de début" />
       <TextField source="endDate" label="Date de fin" />
-      {/* Composant custom ManagerCard utilisant useGetOne */}
+      <DateField source="createdAt" label="Créé le" showTime />
+      <DateField source="updatedAt" label="Mis à jour le" showTime />
       <ManagerCard />
     </SimpleShowLayout>
   </Show>

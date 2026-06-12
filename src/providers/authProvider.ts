@@ -1,111 +1,88 @@
 import type { AuthProvider } from "react-admin";
-import { getAxiosInstance, setToken, clearToken, getToken, API_URL } from "./httpClient";
 
 /**
- * authProvider — handles authentication & authorization.
+ * authProvider — authentification locale via json-server (/users).
  *
- * SECURITY NOTE — password handling:
- *  - The password typed by the user is sent ONCE, over HTTPS in production,
- *    directly to the backend's /auth/login endpoint.
- *  - It is NEVER written to localStorage, sessionStorage, cookies, or any
- *    client-side store, and never logged to the console.
- *  - Only the backend issues and verifies the password (hashed + salted,
- *    e.g. BCrypt). The frontend only ever stores the resulting JWT,
- *    which is short-lived and revocable, never the credential itself.
- *  - On the JS side the variable holding the password goes out of scope
- *    as soon as login() returns and is eligible for garbage collection.
+ * json-server supporte le filtrage par query params nativement :
+ *   GET /users?email=admin@company.com&password=admin123
+ * → retourne le tableau des utilisateurs correspondants.
+ *
+ * Comptes (définis dans db.json) :
+ *   admin@company.com / admin123  → rôle "admin"
+ *   user@company.com  / user123   → rôle "user"
  */
 
-interface JwtPayload {
-  sub: string;
-  email?: string;
-  role?: string;
-  permissions?: string[];
-  exp: number;
+const JSON_SERVER_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:3002";
+
+const STORAGE_KEY = "auth_user";
+
+interface StoredUser {
+  id: number;
+  email: string;
+  role: string;
 }
 
-const decodeToken = (token: string): JwtPayload | null => {
+const saveUser = (user: StoredUser) =>
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+
+const loadUser = (): StoredUser | null => {
   try {
-    const payload = token.split(".")[1];
-    return JSON.parse(atob(payload));
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
   }
 };
 
+const clearUser = () => localStorage.removeItem(STORAGE_KEY);
+
 export const authProvider: AuthProvider = {
-  // Called when the user submits the login form
   login: async ({ username, password }) => {
-    const client = getAxiosInstance();
+    const url = `${JSON_SERVER_URL}/users?email=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+    const res = await fetch(url);
 
-    // password is used here only, in this single request body,
-    // and is not retained afterwards.
-    const { data } = await client.post(`${API_URL}/auth/login`, {
-      email: username,
-      password,
-    });
+    if (!res.ok) throw new Error("Erreur réseau — json-server est-il démarré sur le port 3002 ?");
 
-    if (!data?.token) {
-      throw new Error("Invalid credentials");
+    const users: StoredUser[] = await res.json();
+
+    if (!users || users.length === 0) {
+      throw new Error("Email ou mot de passe invalide");
     }
 
-    setToken(data.token);
+    saveUser(users[0]);
     return Promise.resolve();
   },
 
-  // Called when the user clicks on the logout button
   logout: async () => {
-    clearToken();
+    clearUser();
     return Promise.resolve();
   },
 
-  // Called when the API returns an error (e.g. 401/403)
+  checkAuth: async () => {
+    const user = loadUser();
+    return user ? Promise.resolve() : Promise.reject();
+  },
+
   checkError: async (error) => {
     const status = error?.status ?? error?.response?.status;
     if (status === 401 || status === 403) {
-      clearToken();
+      clearUser();
       return Promise.reject();
     }
     return Promise.resolve();
   },
 
-  // Called when the user navigates to a new location, to check
-  // for authentication
-  checkAuth: async () => {
-    const token = getToken();
-    if (!token) return Promise.reject();
-
-    const payload = decodeToken(token);
-    if (!payload) return Promise.reject();
-
-    // Reject if the JWT is expired
-    if (payload.exp * 1000 < Date.now()) {
-      clearToken();
-      return Promise.reject();
-    }
-
-    return Promise.resolve();
-  },
-
-  // Called when the user navigates to a new location, to check
-  // for permissions / roles
   getPermissions: async () => {
-    const token = getToken();
-    if (!token) return Promise.reject();
-
-    const payload = decodeToken(token);
-    return Promise.resolve(payload?.role ?? "user");
+    const user = loadUser();
+    return Promise.resolve(user?.role ?? "user");
   },
 
-  // Called to get the current user's identity for the UI
   getIdentity: async () => {
-    const token = getToken();
-    if (!token) return Promise.reject();
-
-    const payload = decodeToken(token);
+    const user = loadUser();
     return Promise.resolve({
-      id: payload?.sub ?? "",
-      fullName: payload?.email ?? "Unknown user",
+      id: user?.id ?? 0,
+      fullName: user?.email ?? "Inconnu",
     });
   },
 };

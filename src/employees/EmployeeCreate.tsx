@@ -5,51 +5,45 @@ import {
   NumberInput,
   SelectInput,
   BooleanInput,
+  ImageInput,
+  ImageField,
   required,
-  minValue
+  minValue,
 } from "react-admin";
+import { validateName, validateEmail } from "../utils/validators";
+
+const DEPARTMENTS = [
+  { id: "Informatique", name: "Informatique" },
+  { id: "Marketing", name: "Marketing" },
+  { id: "RH", name: "RH" },
+  { id: "Finance", name: "Finance" },
+];
 
 export const EmployeeCreate = () => (
   <Create redirect="list">
     <SimpleForm>
-      <TextInput
-        source="firstname"
-        validate={required()}
-      />
+      <ImageInput source="avatar" label="Photo de profil" accept={{ "image/*": [] }}>
+        <ImageField source="src" title="title" />
+      </ImageInput>
 
-      <TextInput
-        source="lastname"
-        validate={required()}
-      />
-
-      <TextInput
-        source="email"
-        validate={required()}
-      />
+      <TextInput source="firstname" label="Prénom" validate={validateName} />
+      <TextInput source="lastname" label="Nom" validate={validateName} />
+      <TextInput source="email" label="Email" validate={validateEmail} />
 
       <SelectInput
         source="department"
+        label="Département"
         validate={required()}
-        choices={[
-          { id: "Informatique", name: "Informatique" },
-          { id: "Marketing", name: "Marketing" },
-          { id: "RH", name: "RH" },
-          { id: "Finance", name: "Finance" }
-        ]}
+        choices={DEPARTMENTS}
       />
 
       <NumberInput
         source="salary"
-        validate={[
-          required(),
-          minValue(1500)
-        ]}
+        label="Salaire (€)"
+        validate={[required(), minValue(1500)]}
       />
 
-      <BooleanInput
-        source="active"
-        defaultValue={true}
-      />
+      <BooleanInput source="active" label="Actif" defaultValue={true} />
     </SimpleForm>
   </Create>
 );
