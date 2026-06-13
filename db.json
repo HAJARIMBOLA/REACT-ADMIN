@@ -31,7 +31,7 @@
       "email": "clara@company.com",
       "department": "RH",
       "salary": 2600,
-      "active": false,
+      "active": true,
       "avatar": null,
       "createdAt": "2025-03-01T08:30:00",
       "updatedAt": "2026-04-10T11:00:00"

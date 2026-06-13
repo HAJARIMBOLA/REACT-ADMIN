@@ -13,6 +13,6 @@ export const CustomAppBar = () => (
       </Typography>
     </Box>
     <TitlePortal />
-    <ToggleThemeButton lightTheme={lightTheme} darkTheme={darkTheme} />
+    <ToggleThemeButton lightTheme={darkTheme} />
   </AppBar>
 );
